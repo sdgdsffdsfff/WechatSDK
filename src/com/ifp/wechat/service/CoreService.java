@@ -72,62 +72,6 @@ public class CoreService {
 			if (msgType.equals(ConstantWeChat.REQ_MESSAGE_TYPE_TEXT)) {
 				// 接收用户发送的文本消息内容
 				String content = requestMap.get("Content");
-				/**
-				 * 0抢话费
-				 */
-				if(content.contains("抢话费")){
-					/**
-					 * -----------------------------
-					 * 0调用微商城klcarwl接口-获取当前用户的openid的活动话费详情
-					 * ------------------------------
-					 */
-					String fromUserName = requestMap.get("FromUserName");
-					StringBuffer wechatuser_url = new StringBuffer();
-					wechatuser_url.append(ConstantUtil.get("REST_IP")+"/klcarwl/wechatuser.do?openid=");
-					try {
-						wechatuser_url.append(URLEncoder.encode(fromUserName, "utf-8"));
-					} catch (UnsupportedEncodingException e) {
-						log.error("URLEncoder error!\n" + e.getMessage());
-					}
-					String wechatuser_jsonStr =HttpUtil.getInvoke(wechatuser_url.toString(),"GET");
-					if (wechatuser_jsonStr != null && !"".equals(wechatuser_jsonStr)) {
-						JSONObject wechatuser_result = JSONObject.fromObject(wechatuser_jsonStr);
-						if (wechatuser_result != null && !"".equals(wechatuser_result)) {
-							JSONObject wechatuser = JSONObject.fromObject(wechatuser_result.get("wechatuser"));
-							if (wechatuser != null) {
-								//------获取wechatuser详细信息------------------
-								String sumcost = wechatuser.getString("sumcost"); //抢到总话费
-								String sumhavefee = wechatuser.getString("sumhavefee");//已充值话费
-								String name = wechatuser.getString("name");
-								String wechatkey = wechatuser.getString("wechatkey");
-								String nickname = wechatuser.getString("nickname");
-								String mobile = wechatuser.getString("mobile");
-								
-								if (Double.parseDouble(sumcost) < 10) {
-									textMessage.setContent("您好，您目前抢到的话费总额为"+sumcost+"元，话费总的达到10元及10元的整数倍才能领取，请继续找好友抢话费。");
-								}else{
-									if(Double.parseDouble(sumhavefee)>0){
-										//1:已经充值过
-										Double differenceFee = Double.parseDouble(sumcost)-Double.parseDouble(sumhavefee);
-										Double topupFee = (differenceFee/10)*10;
-										textMessage.setContent("您好，您目前抢到的话费总额为 "+sumcost+" 元，已充值 "+sumhavefee+" 元，我们将在7个工作日内将"+topupFee+"元话费充入您的手机号："+mobile+"，敬请关注。您可以继续找好友抢话费，达到10元及10元的整数倍后再次领取。");
-									}else{
-										Double topupFee = (Double.parseDouble(sumcost)/10)*10;
-										//2:没有充值过
-										textMessage.setContent("您好，您目前抢到的话费总额为"+sumcost+"元，我们将在7个工作日内将"+topupFee+"元话费充入您的手机号："+mobile+"，敬请关注。您可以继续找好友抢话费，达到10元及10元的整数倍后再次领取。");
-									}
-									
-								}
-							}else{
-								//还没参加过活动的用户
-								textMessage.setContent("您好，您还没参加过活动，点击【我的->活动】 10万话费等你来抢/调皮");
-							}
-						}
-					}
-					
-					respMessage = MessageService.bulidSendMessage(textMessage,
-							ConstantWeChat.RESP_MESSAGE_TYPE_TEXT);
-				}
 				//消息
 				if (content.contains("到")||content.contains("至")||content.contains("-")) {
 						if(content.contains("至")){
@@ -197,29 +141,88 @@ public class CoreService {
 						}
 				}else{
 					/**
-					 * -----------------------------
-					 * 2调用物流接口-单一城市返回 统计货物量
-					 * ------------------------------
+					 * 1抢话费
 					 */
-					StringBuffer url = new StringBuffer();
-					url.append(ConstantUtil.get("WULIU_IP")+"/wuliu/msg/fromStationNums.do?station=");
-					try {
-						url.append(URLEncoder.encode(content, "utf-8"));
-					} catch (UnsupportedEncodingException e) {
-						log.error("URLEncoder error!\n" + e.getMessage());
-					}
-					String jsonStr =HttpUtil.getInvoke(url.toString(),"GET");
-					if (jsonStr != null && !"".equals(jsonStr)) {
-						JSONObject json = JSONObject.fromObject(jsonStr);
-						if (json != null) {
-							String flagStr = json.getString("status");
-							if (flagStr.equals("success")) {
-								textMessage.setContent(json.getString("msg"));
-							}else{
-								textMessage.setContent(json.getString("msg"));
+					if(content.contains("抢话费")){
+						/**
+						 * -----------------------------
+						 * 1调用微商城klcarwl接口-获取当前用户的openid的活动话费详情
+						 * ------------------------------
+						 */
+						String fromUserName = requestMap.get("FromUserName");
+						StringBuffer wechatuser_url = new StringBuffer();
+						wechatuser_url.append(ConstantUtil.get("REST_IP")+"/klcarwl/wechatuser.do?openid=");
+						try {
+							wechatuser_url.append(URLEncoder.encode(fromUserName, "utf-8"));
+						} catch (UnsupportedEncodingException e) {
+							log.error("URLEncoder error!\n" + e.getMessage());
+						}
+						String wechatuser_jsonStr =HttpUtil.getInvoke(wechatuser_url.toString(),"GET");
+						if (wechatuser_jsonStr != null && !"".equals(wechatuser_jsonStr)) {
+							JSONObject wechatuser_result = JSONObject.fromObject(wechatuser_jsonStr);
+							if (wechatuser_result != null && !"".equals(wechatuser_result)) {
+								JSONObject wechatuser = JSONObject.fromObject(wechatuser_result.get("wechatuser"));
+								if (wechatuser != null) {
+									//------获取wechatuser详细信息------------------
+									String sumcost = wechatuser.getString("sumcost"); //抢到总话费
+									String sumhavefee = wechatuser.getString("sumhavefee");//已充值话费
+									String name = wechatuser.getString("name");
+									String wechatkey = wechatuser.getString("wechatkey");
+									String nickname = wechatuser.getString("nickname");
+									String mobile = wechatuser.getString("mobile");
+									
+									if (Double.parseDouble(sumcost) < 10) {
+										textMessage.setContent("您好，您目前抢到的话费总额为"+sumcost+"元，话费总的达到10元及10元的整数倍才能领取，请继续找好友抢话费。");
+									}else{
+										if(Double.parseDouble(sumhavefee)>0){
+											//1:已经充值过
+											Double differenceFee = Double.parseDouble(sumcost)-Double.parseDouble(sumhavefee);
+											Double topupFee = (differenceFee/10)*10;
+											textMessage.setContent("您好，您目前抢到的话费总额为 "+sumcost+" 元，已充值 "+sumhavefee+" 元，我们将在7个工作日内将"+topupFee+"元话费充入您的手机号："+mobile+"，敬请关注。您可以继续找好友抢话费，达到10元及10元的整数倍后再次领取。");
+										}else{
+											Double topupFee = (Double.parseDouble(sumcost)/10)*10;
+											//2:没有充值过
+											textMessage.setContent("您好，您目前抢到的话费总额为"+sumcost+"元，我们将在7个工作日内将"+topupFee+"元话费充入您的手机号："+mobile+"，敬请关注。您可以继续找好友抢话费，达到10元及10元的整数倍后再次领取。");
+										}
+										
+									}
+								}else{
+									//还没参加过活动的用户
+									textMessage.setContent("您好，您还没参加过活动，点击【我的->活动】 10万话费等你来抢/调皮");
+								}
+							}
+						}else{
+							//还没参加过活动的用户
+							textMessage.setContent("您好，您还没参加过活动，点击【我的->活动】 10万话费等你来抢/调皮");
+						}
+						
+					}else{
+						/**
+						 * -----------------------------
+						 * 2调用物流接口-单一城市返回 统计货物量
+						 * ------------------------------
+						 */
+						StringBuffer url = new StringBuffer();
+						url.append(ConstantUtil.get("WULIU_IP")+"/wuliu/msg/fromStationNums.do?station=");
+						try {
+							url.append(URLEncoder.encode(content, "utf-8"));
+						} catch (UnsupportedEncodingException e) {
+							log.error("URLEncoder error!\n" + e.getMessage());
+						}
+						String jsonStr =HttpUtil.getInvoke(url.toString(),"GET");
+						if (jsonStr != null && !"".equals(jsonStr)) {
+							JSONObject json = JSONObject.fromObject(jsonStr);
+							if (json != null) {
+								String flagStr = json.getString("status");
+								if (flagStr.equals("success")) {
+									textMessage.setContent(json.getString("msg"));
+								}else{
+									textMessage.setContent(json.getString("msg"));
+								}
 							}
 						}
 					}
+					
 					respMessage = MessageService.bulidSendMessage(textMessage,
 							ConstantWeChat.RESP_MESSAGE_TYPE_TEXT);
 				}
