@@ -142,10 +142,11 @@ public class MenuService {
 		Button btn2 = new Button("发货发车", "click", null, null, new Button[] {search_cards, publish_cards });
 		*/
 		Button member_center = new Button("会员中心", "view", null, ConstantUtil.get("REST_IP")+"/klcarwl/member/memberCenter.do",null);
+		Button activity = new Button("活动", "view", null, ConstantUtil.get("REST_IP")+"/klcarwl/activity.do?openidA=oJpIxt89JcMyDgwjDVbMNcC7IxJo",null);
 		Button weizhang = new Button("违章查询", "view", null, ConstantUtil.get("REST_IP")+"/klcarwl/weizhang.do",null);
 		Button about_us = new Button("关于我们", "click", "about_us", null,null);
 		Button about_service = new Button("联系我们", "view",null, ConstantUtil.get("REST_IP")+"/klcarwl/contractUs.do",null);
-		Button btn3 = new Button("我的", "click", null, null, new Button[] {member_center,weizhang,about_service,about_us });
+		Button btn3 = new Button("我的", "click", null, null, new Button[] {activity,member_center,weizhang,about_service,about_us });
 		Menu menu = new Menu(new Button[] { search_goods,publish_goods, btn3 });
 		createMenu(menu);
 		log.info("菜单添加成功!");
