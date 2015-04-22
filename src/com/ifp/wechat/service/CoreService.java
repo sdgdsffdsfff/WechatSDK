@@ -164,8 +164,11 @@ public class CoreService {
 								JSONObject wechatuser = JSONObject.fromObject(wechatuser_result.get("wechatuser"));
 								if (wechatuser != null) {
 									//------获取wechatuser详细信息------------------
+									String sumhavefee="";
 									String sumcost = wechatuser.getString("sumcost"); //抢到总话费
-									String sumhavefee = wechatuser.getString("sumhavefee");//已充值话费
+									if(wechatuser.toString().contains("sumhavefee")){
+										sumhavefee = wechatuser.getString("sumhavefee");//已充值话费
+									}
 									String name = wechatuser.getString("name");
 									String wechatkey = wechatuser.getString("wechatkey");
 									String nickname = wechatuser.getString("nickname");
