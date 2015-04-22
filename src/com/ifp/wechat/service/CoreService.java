@@ -143,7 +143,7 @@ public class CoreService {
 					/**
 					 * 1抢话费
 					 */
-					if(content.contains("抢话费")){
+					if(content.contains("领话费")){
 						/**
 						 * -----------------------------
 						 * 1调用微商城klcarwl接口-获取当前用户的openid的活动话费详情
@@ -151,7 +151,7 @@ public class CoreService {
 						 */
 						String fromUserName = requestMap.get("FromUserName");
 						StringBuffer wechatuser_url = new StringBuffer();
-						wechatuser_url.append(ConstantUtil.get("REST_IP")+"/klcarwl/wechatuser.do?openid=");
+						wechatuser_url.append(ConstantUtil.get("REST_IP")+"/klcarwl/wechatuser?openid=");
 						try {
 							wechatuser_url.append(URLEncoder.encode(fromUserName, "utf-8"));
 						} catch (UnsupportedEncodingException e) {
