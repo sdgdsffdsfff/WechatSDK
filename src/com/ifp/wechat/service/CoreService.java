@@ -180,10 +180,10 @@ public class CoreService {
 										if(Double.parseDouble(sumhavefee)>0){
 											//1:已经充值过
 											Double differenceFee = Double.parseDouble(sumcost)-Double.parseDouble(sumhavefee);
-											Double topupFee = (differenceFee/10)*10;
+											Double topupFee = (Math.floor(differenceFee/10))*10;
 											textMessage.setContent("您好，您目前抢到的话费总额为 "+sumcost+" 元，已充值 "+sumhavefee+" 元，我们将在7个工作日内将"+topupFee+"元话费充入您的手机号："+mobile+"，敬请关注。您可以继续找好友抢话费，达到10元及10元的整数倍后再次领取。");
 										}else{
-											Double topupFee = (Double.parseDouble(sumcost)/10)*10;
+											Double topupFee = (Math.floor(Double.parseDouble(sumcost)/10))*10;
 											//2:没有充值过
 											textMessage.setContent("您好，您目前抢到的话费总额为"+sumcost+"元，我们将在7个工作日内将"+topupFee+"元话费充入您的手机号："+mobile+"，敬请关注。您可以继续找好友抢话费，达到10元及10元的整数倍后再次领取。");
 										}
