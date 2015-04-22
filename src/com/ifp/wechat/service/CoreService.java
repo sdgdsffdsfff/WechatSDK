@@ -151,7 +151,7 @@ public class CoreService {
 						 */
 						String fromUserName = requestMap.get("FromUserName");
 						StringBuffer wechatuser_url = new StringBuffer();
-						wechatuser_url.append(ConstantUtil.get("REST_IP")+"/klcarwl/wechatuser?openid=");
+						wechatuser_url.append(ConstantUtil.get("REST_IP")+"/klcarwl/wechatuser.do?openid=");
 						try {
 							wechatuser_url.append(URLEncoder.encode(fromUserName, "utf-8"));
 						} catch (UnsupportedEncodingException e) {
