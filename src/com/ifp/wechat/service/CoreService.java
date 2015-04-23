@@ -7,6 +7,7 @@ package com.ifp.wechat.service;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -149,6 +150,7 @@ public class CoreService {
 						 * 1调用微商城klcarwl接口-获取当前用户的openid的活动话费详情
 						 * ------------------------------
 						 */
+						DecimalFormat    df   = new DecimalFormat("######0.00");   
 						String fromUserName = requestMap.get("FromUserName");
 						StringBuffer wechatuser_url = new StringBuffer();
 						wechatuser_url.append(ConstantUtil.get("REST_IP")+"/klcarwl/wechatuser.do?openid=");
@@ -181,11 +183,11 @@ public class CoreService {
 											//1:已经充值过
 											Double differenceFee = Double.parseDouble(sumcost)-Double.parseDouble(sumhavefee);
 											Double topupFee = (Math.floor(differenceFee/10))*10;
-											textMessage.setContent("您好，您目前抢到的话费总额为 "+sumcost+" 元，已充值 "+sumhavefee+" 元，我们将在7个工作日内将"+topupFee+"元话费充入您的手机号："+mobile+"，敬请关注。您可以继续找好友抢话费，达到10元及10元的整数倍后再次领取。");
+											textMessage.setContent("您好，您目前抢到的话费总额为 "+sumcost+" 元，已充值 "+sumhavefee+" 元，我们将在7个工作日内将"+df.format(topupFee)+"元话费充入您的手机号："+mobile+"，敬请关注。您可以继续找好友抢话费，达到10元及10元的整数倍后再次领取。");
 										}else{
 											Double topupFee = (Math.floor(Double.parseDouble(sumcost)/10))*10;
 											//2:没有充值过
-											textMessage.setContent("您好，您目前抢到的话费总额为"+sumcost+"元，我们将在7个工作日内将"+topupFee+"元话费充入您的手机号："+mobile+"，敬请关注。您可以继续找好友抢话费，达到10元及10元的整数倍后再次领取。");
+											textMessage.setContent("您好，您目前抢到的话费总额为"+sumcost+"元，我们将在7个工作日内将"+df.format(topupFee)+"元话费充入您的手机号："+mobile+"，敬请关注。您可以继续找好友抢话费，达到10元及10元的整数倍后再次领取。");
 										}
 										
 									}
